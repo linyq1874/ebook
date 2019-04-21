@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <nav>
+    <nav class="zIndex3">
       <router-link :to="path.path" v-for="(path, index) in routerPaths" :key="index">{{path.name}}</router-link>
     </nav>
     <router-view/>
@@ -30,7 +30,7 @@ export default {
 
       let fontSize = window.innerWidth / 10;
       fontSize = fontSize > 50 ? 50 : fontSize;
-      html.style.fontSize = fontSize + "px";
+      html.style.fontSize = `${fontSize}px`;
     });
   }
 };
@@ -38,4 +38,8 @@ export default {
 
 
 <style lang="scss">
+nav {
+  position: absolute;
+  background: #fff;
+}
 </style>

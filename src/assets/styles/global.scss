@@ -1,17 +1,62 @@
 // 千万别忘了分号，否则会报错
 @import './reset';
 
-// 1rem = fontSize px
-// 1px = (1 / fontSize)rem
 
-$fontSize: 37.5;
+
+/**
+1rem = fontSize px
+1px = (1 / fontSize)rem
+
+这里$ratio值的设定是由用户决定的，可以根据自己的实际需要（或者UI设计稿）进行修改 
+这个值决定了px2rem输出的结果，如果设定为37.5，那么px2rem(20)，表示在375px宽度
+的屏幕下，显示为20px，计算方法如下： 
+第一步：375px宽度的屏幕，1rem=37.5px
+（因为在App.vue 中指定了 html 的font-size=375px/10=37.5px，所以1rem=37.5px） 
+第二步：计算px2rem(20)=(20/37.5)rem 
+第三步：将rem 转化为px：(20/37.5) * 1rem=20/37.5 * 37.5px=20px 如果屏幕为414px，
+那么px2rem(20)的计算结果为： px2rem(20)=(20/37.5)*41.4px=22.08px 
+从而实现了自适应布局，因为px2rem(20)会随屏幕宽度放大或缩小，这是一道数学题 
+直接输出结论：
+ 1、$ratio的值可以由用户随意设定 
+ 2、当设置为37.5时，表示以屏幕宽度375px为基准 
+ 3、如果屏幕宽度大于375px，使用px2rem()方法计算出的值会等比例扩大 
+ 4、如果屏幕宽度小于375px，使用px2rem()方法计算出的值会等比例缩小
+*/
+
+$ratio: 375 / 10;
 
 @function px2rem($px) {
-  @return ($px / $fontSize)+rem;
+  @return ($px / $ratio)+rem;
 }
 
 @mixin center() {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.zIndex2 {
+  z-index: 2;
+}
+
+.zIndex3 {
+  z-index: 3;
+}
+
+.slide-down-enter,
+.slide-down-leave-to {
+  transform: translateY(-100%)
+}
+
+.slide-up-enter,
+.slide-up-leave-to {
+  transform: translateY(100%)
+}
+
+.slide-down-enter-active,
+.slide-down-leave-active,
+.slide-up-enter-active,
+.slide-up-leave-active,
+  {
+  transition: all .3s linear;
 }
