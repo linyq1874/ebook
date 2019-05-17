@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <nav class="zIndex3">
+    <!-- <nav class="zIndex3">
       <router-link :to="path.path" v-for="(path, index) in routerPaths" :key="index">{{path.name}}</router-link>
-    </nav>
+    </nav>-->
     <router-view/>
   </div>
 </template>

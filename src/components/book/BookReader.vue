@@ -1,17 +1,9 @@
 <template>
-  <div class="ebook">
-    <div class="book-wrapper">
-      <book-title></book-title>
-      <div id="book"></div>
-      <book-menu></book-menu>
-    </div>
-  </div>
+  <div id="book"></div>
 </template>
 
 <script>
 import Epub from "epubjs";
-import BookTitle from "@/components/book/BookTitle";
-import BookMenu from "@/components/book/BookMenu";
 import BookMixin from "@/utils/Mixins";
 
 export default {
@@ -20,17 +12,13 @@ export default {
   data() {
     return {};
   },
-  computed: {},
-  components: {
-    BookTitle,
-    BookMenu
-  },
   mounted() {
     this.getBook();
   },
   methods: {
     getBook() {
       const fileName = this.$route.params.fileName.replace(/\|/, "/");
+      console.log(fileName);
 
       this.setFileName(fileName).then(() => {
         this.showEpub();
@@ -99,8 +87,4 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/assets/styles/global.scss";
-
-.book-wrapper {
-  position: relative;
-}
 </style>

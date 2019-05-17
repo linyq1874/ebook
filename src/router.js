@@ -6,13 +6,18 @@ Vue.use(Router);
 export default new Router({
   routes: [{
     path: '/',
-    name: 'home',
-    component: () => import('@/views/Home')
+    // name: 'home',
+    // component: () => import('@/views/Home')
+    redirect: '/book'
   },
   {
-    path: '/book/:fileName',
+    path: '/book',
     name: 'book',
-    component: () => import('@/views/Book')
+    component: () => import('@/views/ebook/index'),
+    children: [{
+      path: ':fileName',
+      component: () => import("@/components/book/BookReader")
+    }]
   }
   ]
 });
