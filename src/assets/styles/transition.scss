@@ -1,0 +1,32 @@
+@import "./mixin.scss";
+
+.slide-down-enter-active,
+.slide-down-leave-active,
+.slide-up-enter-active,
+.slide-up-leave-active,
+.fontPopup-slide-up-enter-active,
+.fontPopup-slide-up-leave-active {
+  transition: all .2s linear;
+}
+
+.slide-down-enter,
+.slide-down-leave-to {
+  transform: translateY(-100%)
+}
+
+.slide-up-enter,
+.slide-up-leave-to {
+  transform: translateY(px2rem(138))
+}
+
+.fontPopup-slide-up-enter,
+.fontPopup-slide-up-leave-to {
+  transform: translateY(px2rem(138));
+  opacity: 0;
+}
+
+.fontPopup-slide-up-enter-to,
+.fontPopup-slide-up-leave {
+  transform: translateY(0);
+  opacity: 1;
+}

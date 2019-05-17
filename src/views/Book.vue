@@ -1,59 +1,50 @@
 <template>
   <div class="ebook">
     <div class="book-wrapper">
+      <book-title></book-title>
       <div id="book"></div>
-      <div class="mask zIndex2">
-        <div class="left" @click="prev"></div>
-        <div class="center" @click="toggleTitleAndMenu"></div>
-        <div class="right" @click="next"></div>
-      </div>
-      <transition name="slide-down">
-        <div class="title-wrapper zIndex3" v-show="isTitleAndMenuShow">
-          <div class="left">
-            <i class="iconfont icon-fanhui"></i>
-          </div>
-          <div class="right">
-            <i class="iconfont icon-wode"></i>
-            <i class="iconfont icon-gouwuche"></i>
-            <i class="iconfont icon-gengduo"></i>
-          </div>
-        </div>
-      </transition>
-      <transition name="slide-up">
-        <div class="menu-wrapper zIndex3" v-show="isTitleAndMenuShow">
-          <i class="iconfont icon-caidan"></i>
-          <i class="iconfont icon-jindu"></i>
-          <i class="iconfont icon-liangdu"></i>
-          <i class="iconfont">A</i>
-        </div>
-      </transition>
+      <book-menu></book-menu>
     </div>
   </div>
 </template>
 
 <script>
 import Epub from "epubjs";
+import BookTitle from "@/components/book/BookTitle";
+import BookMenu from "@/components/book/BookMenu";
+import BookMixin from "@/utils/Mixins";
 
 export default {
+  mixins: [BookMixin],
   name: "",
   data() {
-    return {
-      // publicPath: process.env.BASE_URL,
-      isTitleAndMenuShow: false
-    };
+    return {};
   },
-  components: {},
+  computed: {},
+  components: {
+    BookTitle,
+    BookMenu
+  },
   mounted() {
-    this.showEpub();
+    this.getBook();
   },
   methods: {
+    getBook() {
+      const fileName = this.$route.params.fileName.replace(/\|/, "/");
+
+      this.setFileName(fileName).then(() => {
+        this.showEpub();
+      });
+    },
     showEpub() {
       const win = window,
-        // DOWLOAD_URL = `${this.publicPath}book/124845.epub`;
-        DOWLOAD_URL = `/book/124845.epub`;
+        prevURL = process.env.VUE_APP_EPUB_URL,
+        DOWLOAD_URL = `${prevURL}/${this.fileName}.epub`;
+
       // 生成book
       this.book = new Epub(DOWLOAD_URL);
-
+      // 将book作为vuex来全局管理
+      this.setCurrentBook(this.book);
       // 生成Rendition，通过Book.renderTo
       this.rendition = this.book.renderTo("book", {
         width: win.innerWidth,
@@ -61,15 +52,46 @@ export default {
       });
       // 通过Rendition.display 渲染电子书
       this.displayed = this.rendition.display();
+
+      // 手势操作
+      this.rendition.on("touchstart", (event) => {
+        this.touchstartTime = event.timeStamp;
+        this.touchstartX = event.changedTouches[0].clientX;
+      });
+      this.rendition.on("touchend", (event) => {
+        const time = event.timeStamp - this.touchstartTime,
+          offsetClientX = event.changedTouches[0].clientX - this.touchstartX;
+
+        if (time < 500 && offsetClientX < -40) {
+          this.nextPage();
+        } else if (time < 500 && offsetClientX > 40) {
+          this.prevPage();
+        } else {
+          this.toggleTitleAndMenu();
+        }
+      });
     },
-    prev() {
+    prevPage() {
       this.rendition.prev();
+      if (this.menuVisible) {
+        this.hideTitleAndMenu();
+      }
     },
-    next() {
+    nextPage() {
       this.rendition.next();
+      if (this.menuVisible) {
+        this.hideTitleAndMenu();
+      }
     },
     toggleTitleAndMenu() {
-      this.isTitleAndMenuShow = !this.isTitleAndMenuShow;
+      this.setMenuVisible(!this.menuVisible);
+      this.setSettingVisible(-1);
+      this.setFontFamilyVisible(false);
+    },
+    hideTitleAndMenu() {
+      this.setMenuVisible(false);
+      this.setSettingVisible(-1);
+      this.setFontFamilyVisible(false);
     }
   }
 };
@@ -80,58 +102,5 @@ export default {
 
 .book-wrapper {
   position: relative;
-  .mask {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    .left {
-      flex: 0 0 px2rem(100);
-    }
-    .center {
-      flex: 1;
-    }
-    .right {
-      flex: 0 0 px2rem(100);
-    }
-  }
-  .iconfont {
-    padding: 0 px2rem(10);
-    font-size: px2rem(20);
-  }
-  .title-wrapper {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 10%;
-    display: flex;
-    background: #fff;
-    box-shadow: 0 px2rem(8) px2rem(8) rgba(0, 0, 0, 0.15);
-    .left {
-      width: px2rem(80);
-      @include center;
-    }
-    .right {
-      @include center;
-      flex: 1;
-      display: flex;
-      justify-content: flex-end;
-    }
-  }
-  .menu-wrapper {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 10%;
-    background: #fff;
-    display: flex;
-    box-shadow: 0 px2rem(-8) px2rem(8) rgba(0, 0, 0, 0.15);
-    @include center;
-    justify-content: space-around;
-  }
 }
 </style>

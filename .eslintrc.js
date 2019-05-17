@@ -18,7 +18,9 @@ module.exports = {
     'linebreak-style': 'off',
     "one-var": [0, "never"],
     "max-len": "off",
-    "eol-last": "off"
+    "eol-last": "off",
+    "import/extensions": "off",
+    "no-param-reassign": "off"
   },
   parserOptions: {
     parser: 'babel-eslint',

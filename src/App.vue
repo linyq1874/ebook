@@ -18,7 +18,7 @@ export default {
           name: "首页"
         },
         {
-          path: "/book",
+          path: "/book/History|2017_Book_ExecutingMagicInTheModernEra",
           name: "电子书"
         }
       ]

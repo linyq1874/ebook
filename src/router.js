@@ -10,7 +10,7 @@ export default new Router({
     component: () => import('@/views/Home')
   },
   {
-    path: '/book',
+    path: '/book/:fileName',
     name: 'book',
     component: () => import('@/views/Book')
   }

@@ -6,16 +6,10 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-
 export default {
   name: "home",
-  computed: {
-    ...mapGetters(["test"])
-  },
-  mounted() {
-    console.log(this.test);
-  }
+  computed: {},
+  mounted() {}
 };
 </script>
 
