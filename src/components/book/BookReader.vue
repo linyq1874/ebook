@@ -18,7 +18,6 @@ export default {
   methods: {
     getBook() {
       const fileName = this.$route.params.fileName.replace(/\|/, "/");
-      console.log(fileName);
 
       this.setFileName(fileName).then(() => {
         this.showEpub();
@@ -57,6 +56,26 @@ export default {
         } else {
           this.toggleTitleAndMenu();
         }
+      });
+
+      // 字体切换
+      this.rendition.hooks.content.register((contents) => {
+        Promise.all([
+          contents.addStylesheet(
+            `${process.env.VUE_APP_RES_URL}/fonts/cabin.css`
+          ),
+          contents.addStylesheet(
+            `${process.env.VUE_APP_RES_URL}/fonts/daysOne.css`
+          ),
+          contents.addStylesheet(
+            `${process.env.VUE_APP_RES_URL}/fonts/montserrat.css`
+          ),
+          contents.addStylesheet(
+            `${process.env.VUE_APP_RES_URL}/fonts/tangerine.css`
+          )
+        ]).then(() => {
+          console.log("字体加载完毕。。。");
+        });
       });
     },
     prevPage() {

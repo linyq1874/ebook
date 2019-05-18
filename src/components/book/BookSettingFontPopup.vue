@@ -38,6 +38,11 @@ export default {
   methods: {
     setFontFamily(currentFontFamily) {
       this.setDefaultFontFamily(currentFontFamily);
+      if (currentFontFamily === "Default") {
+        this.currentBook.rendition.themes.font("Time New Roman");
+      } else {
+        this.currentBook.rendition.themes.font(currentFontFamily);
+      }
     },
     hidePopup() {
       this.setFontFamilyVisible(false);
