@@ -14,6 +14,7 @@
     </transition>
     <book-setting-font></book-setting-font>
     <book-setting-font-popup></book-setting-font-popup>
+    <book-setting-theme></book-setting-theme>
   </div>
 </template>
 
@@ -21,6 +22,7 @@
 import BookMixin from "@/utils/Mixins";
 import BookSettingFont from "./BookSettingFont";
 import BookSettingFontPopup from "./BookSettingFontPopup";
+import BookSettingTheme from "./BookSettingTheme";
 
 export default {
   name: "bookMenu",
@@ -31,7 +33,8 @@ export default {
   computed: {},
   components: {
     BookSettingFont,
-    BookSettingFontPopup
+    BookSettingFontPopup,
+    BookSettingTheme
   },
   methods: {
     toggleMenuSetting(index) {

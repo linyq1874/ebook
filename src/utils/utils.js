@@ -18,10 +18,9 @@ export function addCss(href) {
 
 export function removeCss(href) {
   const link = document.getElementsByTagName('link');
-  for (var i = link.length; i >= 0; i--) {
-    if (link[i] && link[i].getAttribute('href') != null && link[i].getAttribute('href').indexOf(
-      href
-) !== -1) {
+  for (let i = link.length; i >= 0; i--) {
+    if (link[i] && link[i].getAttribute('href') != null
+      && link[i].getAttribute('href').indexOf(href) !== -1) {
       link[i].parentNode.removeChild(link[i]);
     }
   }

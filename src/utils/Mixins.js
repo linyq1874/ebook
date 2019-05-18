@@ -1,7 +1,8 @@
-import {
-  mapGetters,
-  mapActions
-} from "vuex";
+import { mapGetters, mapActions } from 'vuex';
+import { THEME_LIST } from './Book';
+import { addCss, removeAllCss } from '@/utils/utils';
+
+// import * as Storage from "./localStorage";
 
 const BookMixin = {
   computed: {
@@ -22,11 +23,14 @@ const BookMixin = {
       'cover',
       'metadata',
       'paginate',
-      'pagelist',
+      'pageList',
       'offsetY',
       'isBookmark',
       'speakingIconBottom'
-    ])
+    ]),
+    themeList() {
+      return THEME_LIST(this);
+    }
   },
   methods: {
     ...mapActions([
@@ -46,11 +50,18 @@ const BookMixin = {
       'setCover',
       'setMetadata',
       'setPaginate',
-      'setPagelist',
+      'setPageList',
       'setOffsetY',
       'setIsBookmark',
       'setSpeakingIconBottom'
-    ])
+    ]),
+    initGlobalStyle() {
+      const href = `${
+        process.env.VUE_APP_RES_URL
+      }/theme/theme_${this.defaultTheme.toLowerCase()}.css`;
+      removeAllCss();
+      addCss(href);
+    }
   }
 };
 

@@ -1,6 +1,4 @@
-import {
-  realPx
-} from '../../utils/utils';
+import { realPx } from '../../utils/utils';
 
 const book = {
   state: {
@@ -20,7 +18,7 @@ const book = {
     cover: null,
     metadata: null,
     paginate: '',
-    pagelist: null,
+    pageList: null,
     offsetY: 0,
     isBookmark: null,
     speakingIconBottom: realPx(58)
@@ -74,8 +72,8 @@ const book = {
     SET_PAGINATE: (state, paginate) => {
       state.paginate = paginate;
     },
-    SET_PAGELIST: (state, pagelist) => {
-      state.pagelist = pagelist;
+    SET_PAGELIST: (state, pageList) => {
+      state.pageList = pageList;
     },
     SET_OFFSETY: (state, offsetY) => {
       state.offsetY = offsetY;

@@ -9,7 +9,8 @@ import {
   getFontSize,
   setFontSize,
   getFontFamily,
-  setFontFamily
+  setFontFamily,
+  getTheme
 } from "@/utils/localStorage";
 
 export default {
@@ -31,8 +32,7 @@ export default {
     },
     showEpub() {
       const win = window,
-        prevURL = process.env.VUE_APP_EPUB_URL,
-        DOWLOAD_URL = `${prevURL}/${this.fileName}.epub`;
+        DOWLOAD_URL = `${process.env.VUE_APP_EPUB_URL}/${this.fileName}.epub`;
 
       // 生成book
       this.book = new Epub(DOWLOAD_URL);
@@ -45,8 +45,10 @@ export default {
       });
       // 通过Rendition.display 渲染电子书
       this.displayed = this.rendition.display().then(() => {
+        this.initTheme();
         this.initFontSize();
         this.initFontFamily();
+        this.initGlobalStyle();
       });
 
       // 手势操作
@@ -87,7 +89,15 @@ export default {
         });
       });
     },
+    initTheme() {
+      this.themeList.forEach((theme) => {
+        this.rendition.themes.register(theme.name, theme.style);
+      });
+      const defaultTheme = getTheme(this.fileName) || this.themeList[0].name;
 
+      this.setDefaultTheme(defaultTheme);
+      this.rendition.themes.select(defaultTheme);
+    },
     initFontSize() {
       const fontSize = getFontSize(this.fileName);
       if (fontSize) {
@@ -106,6 +116,7 @@ export default {
         setFontFamily(this.fileName, this.defaultFontFamily);
       }
     },
+
     prevPage() {
       this.rendition.prev();
       if (this.menuVisible) {

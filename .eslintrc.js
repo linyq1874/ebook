@@ -20,7 +20,8 @@ module.exports = {
     "max-len": "off",
     "eol-last": "off",
     "import/extensions": "off",
-    "no-param-reassign": "off"
+    "no-param-reassign": "off",
+    "no-plusplus": "off"
   },
   parserOptions: {
     parser: 'babel-eslint',
