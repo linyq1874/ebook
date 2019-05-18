@@ -5,6 +5,12 @@
 <script>
 import Epub from "epubjs";
 import BookMixin from "@/utils/Mixins";
+import {
+  getFontSize,
+  setFontSize,
+  getFontFamily,
+  setFontFamily
+} from "@/utils/localStorage";
 
 export default {
   mixins: [BookMixin],
@@ -38,7 +44,10 @@ export default {
         height: win.innerHeight
       });
       // 通过Rendition.display 渲染电子书
-      this.displayed = this.rendition.display();
+      this.displayed = this.rendition.display().then(() => {
+        this.initFontSize();
+        this.initFontFamily();
+      });
 
       // 手势操作
       this.rendition.on("touchstart", (event) => {
@@ -77,6 +86,25 @@ export default {
           console.log("字体加载完毕。。。");
         });
       });
+    },
+
+    initFontSize() {
+      const fontSize = getFontSize(this.fileName);
+      if (fontSize) {
+        this.setDefaultFontSize(fontSize);
+        this.rendition.themes.fontSize(`${fontSize}px`);
+      } else {
+        setFontSize(this.fileName, this.defaultFontSize);
+      }
+    },
+    initFontFamily() {
+      const fontFamily = getFontFamily(this.fileName);
+      if (fontFamily) {
+        this.setDefaultFontFamily(fontFamily);
+        this.currentBook.rendition.themes.font(fontFamily);
+      } else {
+        setFontFamily(this.fileName, this.defaultFontFamily);
+      }
     },
     prevPage() {
       this.rendition.prev();

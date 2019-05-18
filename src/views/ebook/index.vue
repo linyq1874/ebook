@@ -5,7 +5,12 @@
       <!-- <div id="book"></div> -->
       <nav>
         <router-link v-for="(nav,index) in routerPath" :key="index" :to="nav.path">{{nav.name}}</router-link>
+        <select v-model="lang" @change="changeHandler">
+          <option value="cn" selected="selected">cn</option>
+          <option value="en">en</option>
+        </select>
       </nav>
+
       <router-view></router-view>
       <book-menu></book-menu>
     </div>
@@ -15,6 +20,7 @@
 <script>
 import BookTitle from "@/components/book/BookTitle";
 import BookMenu from "@/components/book/BookMenu";
+import { setLocale } from "@/utils/localStorage";
 
 export default {
   name: "",
@@ -29,7 +35,8 @@ export default {
           path: "book/Laws|2015_Book_ProtectingTheRightsOfPeopleWit",
           name: "law"
         }
-      ]
+      ],
+      lang: ""
     };
   },
   components: {
@@ -37,7 +44,11 @@ export default {
     BookMenu
   },
   mounted() {},
-  methods: {}
+  methods: {
+    changeHandler() {
+      setLocale(this.lang);
+    }
+  }
 };
 </script>
 

@@ -3,7 +3,7 @@
     <div class="bookFontPopupWrapper zIndex3" v-show="fontFamilyVisible">
       <div class="titleWrapper">
         <i class="iconfont icon-down" @click="hidePopup"></i>
-        <span class="title">选择字体</span>
+        <span class="title">{{$t('book.selectFont')}}</span>
       </div>
       <div class="popupListWrapper">
         <div
@@ -24,6 +24,7 @@
 <script>
 import BookMixin from "@/utils/Mixins";
 import { FONT_FAMILY } from "@/utils/Book";
+import { setFontFamily } from "@/utils/localStorage";
 
 export default {
   name: "bookSettingFontPopup",
@@ -43,6 +44,8 @@ export default {
       } else {
         this.currentBook.rendition.themes.font(currentFontFamily);
       }
+
+      setFontFamily(this.fileName, currentFontFamily);
     },
     hidePopup() {
       this.setFontFamilyVisible(false);

@@ -33,6 +33,7 @@
 <script>
 import BookMixin from "@/utils/Mixins";
 import { FONT_SIZE_LIST } from "@/utils/Book";
+import { setFontSize } from "@/utils/localStorage";
 
 export default {
   name: "BookSettingFont",
@@ -47,6 +48,7 @@ export default {
     setFontSize(fontSize) {
       this.setDefaultFontSize(fontSize);
       this.currentBook.rendition.themes.fontSize(`${fontSize}px`);
+      setFontSize(this.fileName, fontSize);
     },
     showPopup() {
       this.setFontFamilyVisible(true);
