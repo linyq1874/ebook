@@ -1,8 +1,5 @@
 <template>
   <div id="app">
-    <!-- <nav class="zIndex3">
-      <router-link :to="path.path" v-for="(path, index) in routerPaths" :key="index">{{path.name}}</router-link>
-    </nav>-->
     <router-view/>
   </div>
 </template>
@@ -41,8 +38,4 @@ export default {
 
 
 <style lang="scss">
-nav {
-  position: absolute;
-  background: #fff;
-}
 </style>

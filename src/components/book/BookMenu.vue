@@ -16,6 +16,7 @@
     <book-setting-font-popup></book-setting-font-popup>
     <book-setting-theme></book-setting-theme>
     <book-setting-progress></book-setting-progress>
+    <book-slide></book-slide>
   </div>
 </template>
 
@@ -25,6 +26,7 @@ import BookSettingFont from "./BookSettingFont";
 import BookSettingFontPopup from "./BookSettingFontPopup";
 import BookSettingTheme from "./BookSettingTheme";
 import BookSettingProgress from "./BookSettingProgress";
+import BookSlide from "./BookSlide";
 
 export default {
   name: "bookMenu",
@@ -37,7 +39,8 @@ export default {
     BookSettingFont,
     BookSettingFontPopup,
     BookSettingTheme,
-    BookSettingProgress
+    BookSettingProgress,
+    BookSlide
   },
   methods: {
     toggleMenuSetting(index) {

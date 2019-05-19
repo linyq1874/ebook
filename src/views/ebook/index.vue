@@ -77,5 +77,8 @@ export default {
 
 .book-wrapper {
   position: relative;
+  nav {
+    position: absolute;
+  }
 }
 </style>

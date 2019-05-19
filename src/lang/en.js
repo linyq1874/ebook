@@ -23,7 +23,7 @@ const messages = {
     computerScience: 'Computer Science',
     socialSciences: 'Social Sciences',
     economics: 'Economics',
-    education: 'Eductation',
+    education: 'Education',
     engineering: 'Engineering',
     environment: 'Environment',
     geography: 'Geography',

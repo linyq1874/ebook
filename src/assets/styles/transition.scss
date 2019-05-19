@@ -5,7 +5,11 @@
 .slide-up-enter-active,
 .slide-up-leave-active,
 .fontPopup-slide-up-enter-active,
-.fontPopup-slide-up-leave-active {
+.fontPopup-slide-up-leave-active,
+.fade-enter-active,
+.fade-leave-active,
+.slide-right-enter-active,
+.slide-right-leave-active {
   transition: all .2s linear;
 }
 
@@ -29,4 +33,19 @@
 .fontPopup-slide-up-leave {
   transform: translateY(0);
   opacity: 1;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-to,
+.fade-leave {
+  opacity: 1;
+}
+
+.slide-right-enter,
+.slide-right-leave-to {
+  transform: translateX(-100%);
 }
