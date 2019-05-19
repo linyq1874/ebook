@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import BookMixin from "@/utils/Mixins";
+import BookMixin from "@/utils/mixins";
 import { FONT_FAMILY } from "@/utils/Book";
 import { setFontFamily } from "@/utils/localStorage";
 

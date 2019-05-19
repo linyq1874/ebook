@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import BookMixin from "@/utils/Mixins";
+import BookMixin from "@/utils/mixins";
 
 export default {
   name: "",

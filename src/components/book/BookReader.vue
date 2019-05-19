@@ -4,7 +4,7 @@
 
 <script>
 import Epub from "epubjs";
-import BookMixin from "@/utils/Mixins";
+import BookMixin from "@/utils/mixins";
 import {
   getFontSize,
   setFontSize,

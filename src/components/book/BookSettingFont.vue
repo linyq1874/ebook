@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import BookMixin from "@/utils/Mixins";
+import BookMixin from "@/utils/mixins";
 import { FONT_SIZE_LIST } from "@/utils/Book";
 import { setFontSize } from "@/utils/localStorage";
 

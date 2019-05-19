@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import BookMixin from "@/utils/Mixins";
+import BookMixin from "@/utils/mixins";
 import { setTheme } from "@/utils/localStorage";
 
 export default {

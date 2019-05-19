@@ -21,7 +21,7 @@
 import BookTitle from "@/components/book/BookTitle";
 import BookMenu from "@/components/book/BookMenu";
 import { setLocale, getReadTime, setReadTime } from "@/utils/localStorage";
-import BookMixin from "@/utils/Mixins";
+import BookMixin from "@/utils/mixins";
 
 export default {
   name: "",

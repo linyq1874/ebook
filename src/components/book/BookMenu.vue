@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import BookMixin from "@/utils/Mixins";
+import BookMixin from "@/utils/mixins";
 import BookSettingFont from "./BookSettingFont";
 import BookSettingFontPopup from "./BookSettingFontPopup";
 import BookSettingTheme from "./BookSettingTheme";
