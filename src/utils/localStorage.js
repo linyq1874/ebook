@@ -41,3 +41,11 @@ export const setTheme = (fileName, theme) => setBookObj(fileName, 'theme', theme
 // 国际化语言
 export const getLocale = () => getLocalStorage('locale');
 export const setLocale = locale => setLocalStorage('locale', locale);
+
+// 进度
+export const getLocation = fileName => getBookObj(fileName, 'location');
+export const setLocation = (fileName, location) => setBookObj(fileName, 'location', location);
+
+// 阅读时间
+export const getReadTime = fileName => getBookObj(fileName, 'readTime');
+export const setReadTime = (fileName, readTime) => setBookObj(fileName, 'readTime', readTime);

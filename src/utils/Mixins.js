@@ -1,6 +1,17 @@
-import { mapGetters, mapActions } from 'vuex';
-import { THEME_LIST } from './Book';
-import { addCss, removeAllCss } from '@/utils/utils';
+import {
+  mapGetters,
+  mapActions
+} from 'vuex';
+import {
+  THEME_LIST
+} from './Book';
+import {
+  addCss,
+  removeAllCss
+} from './utils';
+import {
+  setLocation
+} from "./localStorage";
 
 // import * as Storage from "./localStorage";
 
@@ -61,7 +72,43 @@ const BookMixin = {
       }/theme/theme_${this.defaultTheme.toLowerCase()}.css`;
       removeAllCss();
       addCss(href);
+    },
+    // 章节跳转时，更新进度
+    refreshLocation() {
+      const {
+          currentBook,
+          fileName
+        } = this,
+        currentLocation = currentBook.rendition.currentLocation(),
+        startCfi = currentLocation.start.cfi,
+        progress = currentBook.locations.percentageFromCfi(startCfi);
+
+      this.setProgress(Math.floor(progress * 100));
+      this.setSection(currentLocation.start.index);
+      setLocation(fileName, startCfi);
+    },
+    // 通用显示方法
+    display(target, cb = () => {}) {
+      if (target) {
+        this.currentBook.rendition.display(target).then(() => {
+          this.refreshLocation();
+          cb && cb();
+        });
+      } else {
+        this.currentBook.rendition.display().then(() => {
+          this.refreshLocation();
+          cb && cb();
+        });
+      }
     }
+    // getSectionName() {
+    //   if (this.section) {
+    //     const section = this.currentBook.section(this.section);
+    //     if (section && section.href && this.currentBook && this.currentBook.navigation) {
+    //       return this.navigation[this.section].label;
+    //     }
+    //   }
+    // }
   }
 };
 

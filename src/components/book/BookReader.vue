@@ -10,7 +10,8 @@ import {
   setFontSize,
   getFontFamily,
   setFontFamily,
-  getTheme
+  getTheme,
+  getLocation
 } from "@/utils/localStorage";
 
 export default {
@@ -31,42 +32,44 @@ export default {
       });
     },
     showEpub() {
-      const win = window,
-        DOWLOAD_URL = `${process.env.VUE_APP_EPUB_URL}/${this.fileName}.epub`;
+      const DOWLOAD_URL = `${process.env.VUE_APP_EPUB_URL}/${
+        this.fileName
+      }.epub`;
 
       // 生成book
       this.book = new Epub(DOWLOAD_URL);
       // 将book作为vuex来全局管理
       this.setCurrentBook(this.book);
+      // 生成Rendition
+      this.initRendition();
+      // 手势操作
+      this.initGuesture();
+
+      // 书本加载完毕
+      this.book.ready
+        .then(() => this.book.locations.generate(
+            750 * (window.innerWidth / 375) * (getFontSize(this.fileName) / 16)
+          ))
+        .then(() => {
+          // console.log(locations);
+          this.setBookAvailable(true);
+          this.refreshLocation();
+        });
+    },
+    initRendition() {
+      const win = window;
       // 生成Rendition，通过Book.renderTo
       this.rendition = this.book.renderTo("book", {
         width: win.innerWidth,
         height: win.innerHeight
       });
       // 通过Rendition.display 渲染电子书
-      this.displayed = this.rendition.display().then(() => {
+      const location = getLocation(this.fileName);
+      this.display(location, () => {
         this.initTheme();
         this.initFontSize();
         this.initFontFamily();
         this.initGlobalStyle();
-      });
-
-      // 手势操作
-      this.rendition.on("touchstart", (event) => {
-        this.touchstartTime = event.timeStamp;
-        this.touchstartX = event.changedTouches[0].clientX;
-      });
-      this.rendition.on("touchend", (event) => {
-        const time = event.timeStamp - this.touchstartTime,
-          offsetClientX = event.changedTouches[0].clientX - this.touchstartX;
-
-        if (time < 500 && offsetClientX < -40) {
-          this.nextPage();
-        } else if (time < 500 && offsetClientX > 40) {
-          this.prevPage();
-        } else {
-          this.toggleTitleAndMenu();
-        }
       });
 
       // 字体切换
@@ -89,6 +92,26 @@ export default {
         });
       });
     },
+    // 手势操作
+    initGuesture() {
+      this.rendition.on("touchstart", (event) => {
+        this.touchstartTime = event.timeStamp;
+        this.touchstartX = event.changedTouches[0].clientX;
+      });
+      this.rendition.on("touchend", (event) => {
+        const time = event.timeStamp - this.touchstartTime,
+          offsetClientX = event.changedTouches[0].clientX - this.touchstartX;
+
+        if (time < 500 && offsetClientX < -40) {
+          this.nextPage();
+        } else if (time < 500 && offsetClientX > 40) {
+          this.prevPage();
+        } else {
+          this.toggleTitleAndMenu();
+        }
+      });
+    },
+    // 主题
     initTheme() {
       this.themeList.forEach((theme) => {
         this.rendition.themes.register(theme.name, theme.style);
@@ -98,6 +121,7 @@ export default {
       this.setDefaultTheme(defaultTheme);
       this.rendition.themes.select(defaultTheme);
     },
+    // 字号
     initFontSize() {
       const fontSize = getFontSize(this.fileName);
       if (fontSize) {
@@ -107,6 +131,7 @@ export default {
         setFontSize(this.fileName, this.defaultFontSize);
       }
     },
+    // 字体
     initFontFamily() {
       const fontFamily = getFontFamily(this.fileName);
       if (fontFamily) {
@@ -118,13 +143,17 @@ export default {
     },
 
     prevPage() {
-      this.rendition.prev();
+      this.rendition.prev().then(() => {
+        this.refreshLocation();
+      });
       if (this.menuVisible) {
         this.hideTitleAndMenu();
       }
     },
     nextPage() {
-      this.rendition.next();
+      this.rendition.next().then(() => {
+        this.refreshLocation();
+      });
       if (this.menuVisible) {
         this.hideTitleAndMenu();
       }

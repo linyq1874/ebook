@@ -20,10 +20,12 @@
 <script>
 import BookTitle from "@/components/book/BookTitle";
 import BookMenu from "@/components/book/BookMenu";
-import { setLocale } from "@/utils/localStorage";
+import { setLocale, getReadTime, setReadTime } from "@/utils/localStorage";
+import BookMixin from "@/utils/Mixins";
 
 export default {
   name: "",
+  mixins: [BookMixin],
   data() {
     return {
       routerPath: [
@@ -43,11 +45,29 @@ export default {
     BookTitle,
     BookMenu
   },
-  mounted() {},
+  mounted() {
+    this.loopReadTime();
+  },
   methods: {
     changeHandler() {
       setLocale(this.lang);
+    },
+    loopReadTime() {
+      const { fileName } = this;
+      let readTime = getReadTime(fileName);
+      if (!readTime) {
+        readTime = 0;
+      }
+      this.task = setInterval(() => {
+        readTime++;
+        if (readTime % 30 === 0) {
+          setReadTime(fileName, readTime);
+        }
+      }, 1000);
     }
+  },
+  beforeDestroy() {
+    this.task && clearInterval(this.task);
   }
 };
 </script>
