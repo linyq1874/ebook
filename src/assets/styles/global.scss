@@ -1,17 +1,17 @@
 // 千万别忘了分号，否则会报错
 @import './reset';
+@import './transition.scss';
+@import './mixin.scss';
 
-// 1rem = fontSize px
-// 1px = (1 / fontSize)rem
 
-$fontSize: 37.5;
-
-@function px2rem($px) {
-  @return ($px / $fontSize)+rem;
+.zIndex2 {
+  z-index: 2;
 }
 
-@mixin center() {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.zIndex3 {
+  z-index: 3;
+}
+
+.zIndex4 {
+  z-index: 4;
 }
