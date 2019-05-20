@@ -23,7 +23,8 @@ module.exports = {
     "no-param-reassign": "off",
     "no-plusplus": "off",
     "no-unused-expressions": "off",
-    indent: [0, 2]
+    indent: [0, 2],
+    "no-new": "off"
   },
   parserOptions: {
     parser: 'babel-eslint'

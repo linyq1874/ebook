@@ -56,8 +56,6 @@ export default {
 <style lang="scss" scoped>
 @import "@/assets/styles/global.scss";
 .book-content-wrapper {
-  height: 100%;
-  width: 100%;
   display: flex;
   @include absCenter;
   .book-content-info-wrapper {
@@ -72,6 +70,7 @@ export default {
       .content-page {
         width: 100%;
         flex: 1;
+        overflow: hidden; // !! 注意增加，开启bfc
       }
       .book-content-nav {
         width: 100%;
@@ -85,10 +84,6 @@ export default {
           flex: 1;
           text-align: center;
         }
-        // .content-nav {
-        //   box-sizing: border-box;
-        //   border-right: 1px solid #ccc;
-        // }
       }
     }
   }

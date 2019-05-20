@@ -35,7 +35,6 @@
 
 <script>
 import BookMixin from "@/utils/mixins";
-import { getReadTime } from "@/utils/localStorage";
 
 export default {
   name: "BookSettingFont",
@@ -43,20 +42,20 @@ export default {
   computed: {
     // 获取章节名字
     getSectionName() {
-      const { section, currentBook } = this;
-      let name = "";
-      if (section) {
-        const sectionInfo = currentBook.section(section);
-        if (
-          sectionInfo
-          && sectionInfo.href
-          && currentBook
-          && currentBook.navigation
-        ) {
-          name = currentBook.navigation.get(sectionInfo.href).label;
-        }
-      }
-      return name;
+      const { section, navigation } = this;
+      // if (section) {
+      //   const sectionInfo = currentBook.section(section);
+      //   if (
+      //     sectionInfo
+      //     && sectionInfo.href
+      //     && currentBook
+      //     && currentBook.navigation
+      //   ) {
+      //     name = currentBook.navigation.get(sectionInfo.href).label;
+      //   }
+      // }
+      return section ? navigation[section].label : '';
+      // return name;
     }
   },
   methods: {
@@ -103,13 +102,6 @@ export default {
     },
     updateProgressBG(progress) {
       this.$refs.progress.style.backgroundSize = `${progress}% 100%`;
-    },
-    getReadTime() {
-      return this.$t("book.haveRead").replace("$1", this.getReadTimeByMinute());
-    },
-    getReadTimeByMinute() {
-      const readTime = getReadTime(this.fileName) || 0;
-      return Math.ceil(readTime / 60);
     }
   },
   // 所有更新完成之后，初始化进度条背景
@@ -181,6 +173,7 @@ export default {
     padding: 0 px2rem(15);
     @include center;
     .progress-section-text {
+      line-height: px2rem(16);
       @include ellipsis;
     }
   }

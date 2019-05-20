@@ -14,6 +14,8 @@ import {
   getLocation
 } from "@/utils/localStorage";
 
+import { flatten, find } from "@/utils/utils";
+
 export default {
   mixins: [BookMixin],
   name: "",
@@ -44,7 +46,8 @@ export default {
       this.initRendition();
       // 手势操作
       this.initGuesture();
-
+      // 电子书初始化信息
+      this.parseBook();
       // 书本加载完毕
       this.book.ready
         .then(() => this.book.locations.generate(
@@ -141,7 +144,30 @@ export default {
         setFontFamily(this.fileName, this.defaultFontFamily);
       }
     },
+    parseBook() {
+      // 获取电子书封面
+      this.book.loaded.cover.then((cover) => {
+        this.book.archive.createUrl(cover).then((url) => {
+          this.setCover(url);
+        });
+      });
 
+      // 获取电子书书名及作者
+      this.book.loaded.metadata.then((metadata) => {
+        this.setMetadata(metadata);
+      });
+
+      // console.log(this.book);
+      this.book.loaded.navigation.then((navigation) => {
+        // console.log(navigation);
+        const toc = flatten(navigation.toc);
+        toc.forEach((item) => {
+          item.level = find(toc, item);
+          return item;
+        });
+        this.setNavigation(toc);
+      });
+    },
     prevPage() {
       this.rendition.prev().then(() => {
         this.refreshLocation();

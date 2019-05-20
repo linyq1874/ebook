@@ -7,7 +7,8 @@ import {
 } from './Book';
 import {
   addCss,
-  removeAllCss
+  removeAllCss,
+  getReadTimeByMinute
 } from './utils';
 import {
   setLocation
@@ -100,6 +101,9 @@ const BookMixin = {
           cb && cb();
         });
       }
+    },
+    getReadTime() {
+      return this.$t("book.haveRead").replace("$1", getReadTimeByMinute(this.fileName));
     }
     // getSectionName() {
     //   if (this.section) {

@@ -36,6 +36,10 @@ export default {
         {
           path: "book/Laws|2015_Book_ProtectingTheRightsOfPeopleWit",
           name: "law"
+        },
+        {
+          path: "book/Engineering|2014_Book_OpeningScience",
+          name: "Engineering"
         }
       ],
       lang: ""

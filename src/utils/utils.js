@@ -1,3 +1,7 @@
+import {
+  getReadTime
+} from './localStorage';
+
 export function px2rem(px) {
   const ratio = 375 / 10;
   return px / ratio;
@@ -50,4 +54,18 @@ export function os() {
     isAndroid,
     isPc
   };
+}
+
+export function getReadTimeByMinute(fileName) {
+  const readTime = getReadTime(fileName) || 0;
+  return Math.ceil(readTime / 60);
+}
+
+export function flatten(array) {
+  return [].concat(...array.map(item => [].concat(item, ...flatten(item.subitems))));
+}
+
+export function find(array, target, level = 0) {
+  return !target.parent ? level : find(array, array.filter(parentItem => parentItem.id === target
+    .parent)[0], ++level);
 }

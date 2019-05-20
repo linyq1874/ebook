@@ -18,6 +18,10 @@ export default new Router({
       path: ':fileName',
       component: () => import("@/components/book/BookReader")
     }]
+  },
+  {
+    path: '*',
+    redirect: '/book'
   }
   ]
 });
