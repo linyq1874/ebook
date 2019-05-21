@@ -55,6 +55,7 @@
     </section>
     <section class="searchList" ref="searchList" v-if="searchVisible">
       <ul class="content" v-if="searchList.length">
+        <!-- 有带样式，需要使用v-html -->
         <li
           v-for="(item, index) in searchList"
           :key="index"
@@ -132,6 +133,12 @@ export default {
         this.searchLock = false;
       }
     },
+    hideSearchPage() {
+      this.searchVisible = false;
+      this.keyword = "";
+      this.searchList = [];
+      this.destroyBScroll("searchList-scroll");
+    },
     searchHandler() {
       this.doSearch(this.currentBook, this.keyword).then((results) => {
         if (results.length) {
@@ -168,15 +175,10 @@ export default {
             .finally(item.unload.bind(item)))
       ).then(results => Promise.resolve([].concat(...results)));
     },
-    hideSearchPage() {
-      this.searchVisible = false;
-      this.keyword = "";
-      this.searchList = [];
-      this.destroyBScroll("searchList-scroll");
-    },
     displayContent(target, highlight = false) {
       this.display(target, () => {
         this.setMenuVisible(false);
+        // 电子书高亮api
         highlight && this.currentBook.rendition.annotations.highlight(target);
       });
     },

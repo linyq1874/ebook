@@ -3,7 +3,7 @@
     <div class="book-content-wrapper zIndex4" v-show="menuVisible && settingVisible === 0">
       <transition name="slide-right">
         <section class="book-content-info-wrapper" v-show="menuVisible && settingVisible === 0">
-          <div class="content-page-wrapper">
+          <div class="content-page-wrapper" v-if="bookAvailable">
             <div class="content-page">
               <keep-alive>
                 <component :is="tab === 1 ? content : bookmark"></component>
@@ -18,7 +18,9 @@
               >{{$t('book.bookmark')}}</span>
             </nav>
           </div>
-          <div class="empty"></div>
+          <div class="empty" v-else>
+            <book-loading></book-loading>
+          </div>
         </section>
       </transition>
       <section class="mask" @click="maskClick"></section>
@@ -29,6 +31,7 @@
 <script>
 import BookMark from "./BookSlideBookMark";
 import BookContent from "./BookSlideContent";
+import BookLoading from "./Loading";
 import BookMixin from "@/utils/mixins";
 
 export default {
@@ -41,7 +44,9 @@ export default {
       tab: 1
     };
   },
-  components: {},
+  components: {
+    BookLoading
+  },
   methods: {
     changeTab(tab = 1) {
       this.tab = tab;
@@ -85,6 +90,10 @@ export default {
           text-align: center;
         }
       }
+    }
+    .empty {
+      width: 100%;
+      height: 100%;
     }
   }
   .mask {

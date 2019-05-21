@@ -157,9 +157,8 @@ export default {
         this.setMetadata(metadata);
       });
 
-      // console.log(this.book);
+      // 获取电子书目录;
       this.book.loaded.navigation.then((navigation) => {
-        // console.log(navigation);
         const toc = flatten(navigation.toc);
         toc.forEach((item) => {
           item.level = find(toc, item);
