@@ -1,18 +1,7 @@
-import {
-  mapGetters,
-  mapActions
-} from 'vuex';
-import {
-  THEME_LIST
-} from './Book';
-import {
-  addCss,
-  removeAllCss,
-  getReadTimeByMinute
-} from './utils';
-import {
-  setLocation
-} from "./localStorage";
+import { mapGetters, mapActions } from 'vuex';
+import { THEME_LIST } from './Book';
+import { addCss, removeAllCss, getReadTimeByMinute } from './utils';
+import { setLocation } from './localStorage';
 
 // import * as Storage from "./localStorage";
 
@@ -76,17 +65,17 @@ const BookMixin = {
     },
     // 章节跳转时，更新进度
     refreshLocation() {
-      const {
-          currentBook,
-          fileName
-        } = this,
-        currentLocation = currentBook.rendition.currentLocation(),
-        startCfi = currentLocation.start.cfi,
-        progress = currentBook.locations.percentageFromCfi(startCfi);
+      const { currentBook, fileName } = this,
+        currentLocation = currentBook.rendition.currentLocation();
 
-      this.setProgress(Math.floor(progress * 100));
-      this.setSection(currentLocation.start.index);
-      setLocation(fileName, startCfi);
+      if (currentLocation && currentLocation.start) {
+        const startCfi = currentLocation.start.cfi,
+          progress = currentBook.locations.percentageFromCfi(startCfi);
+
+        this.setProgress(Math.floor(progress * 100));
+        this.setSection(currentLocation.start.index);
+        setLocation(fileName, startCfi);
+      }
     },
     // 通用显示方法
     display(target, cb = () => {}) {
@@ -103,7 +92,7 @@ const BookMixin = {
       }
     },
     getReadTime() {
-      return this.$t("book.haveRead").replace("$1", getReadTimeByMinute(this.fileName));
+      return this.$t('book.haveRead').replace('$1', getReadTimeByMinute(this.fileName));
     }
     // getSectionName() {
     //   if (this.section) {

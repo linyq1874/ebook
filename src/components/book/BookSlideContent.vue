@@ -6,15 +6,15 @@
         type="text"
         class="input-text"
         :placeholder="$t('book.searchHint')"
-        @keyup.enter="searchHandler"
+        @keyup.enter.exact="searchHandler"
         @focus="showSearchPage"
-        v-model="keyword"
+        v-model.trim="keyword"
       />
-      <div class="cancel" v-show="searchVisible" @click="hideSearchPage">
+      <div class="cancel" v-if="searchVisible" @click="hideSearchPage">
         {{ $t("book.cancel") }}
       </div>
     </section>
-    <section class="book-info-wrapper" v-show="!searchVisible">
+    <section class="book-info-wrapper" v-if="!searchVisible">
       <div class="book-cover-wrapper">
         <img :src="cover" class="book-cover" />
       </div>
@@ -37,14 +37,15 @@
     <section
       class="content-list-wrapper"
       ref="content-list-wrapper"
-      v-show="!searchVisible"
+      v-if="!searchVisible"
     >
       <ul class="content">
         <li
           v-for="(item, index) in navigationList"
           :key="index"
           class="content-li"
-          @click="toSection(item.href)"
+          @click="displayContent(item.href)"
+          :class="{ selected: section === index }"
         >
           <p class="content-text" :style="getItemStyle(item.level)">
             {{ item.label }}
@@ -52,12 +53,17 @@
         </li>
       </ul>
     </section>
-    <section class="searchList" ref="searchList" v-show="searchVisible">
-      <ul class="content">
-        <li v-for="(item, index) in list" :key="index" class="searchList-li">
-          {{ item }}
-        </li>
+    <section class="searchList" ref="searchList" v-if="searchVisible">
+      <ul class="content" v-if="searchList.length">
+        <li
+          v-for="(item, index) in searchList"
+          :key="index"
+          class="searchList-li"
+          v-html="item.excerpt"
+          @click="displayContent(item.cfi, 'highlight')"
+        ></li>
       </ul>
+      <p v-if="searchLock && !searchList.length && keyword">没有搜到相关信息</p>
     </section>
   </div>
 </template>
@@ -74,7 +80,9 @@ export default {
     return {
       list: [],
       searchVisible: false,
-      keyword: ""
+      keyword: "",
+      searchList: [],
+      searchLock: false
     };
   },
   computed: {
@@ -83,46 +91,93 @@ export default {
       return this.navigation;
     }
   },
+  watch: {
+    keyword(val) {
+      if (val === "") {
+        this.searchLock = false;
+        this.searchList = [];
+        this.destroyBScroll("searchList-scroll");
+      }
+    }
+  },
   components: {},
   mounted() {
-    const list = [];
-    for (let index = 0; index < 100; index++) {
-      list.push(`list item ${index}`);
-    }
-    this.list = list;
-
     this.getBSroll("content-list-wrapper");
   },
   methods: {
     getBSroll(wrapper) {
-      this[`${wrapper}-scroll`] = new BScroll(this.$refs[wrapper], {
-        bounce: true,
-        click: true,
-        momentumLimitDistance: 5,
-        scrollY: true,
-        scrollbar: {
-          fade: false,
-          interactive: false // 1.8.0 新增
-        },
-        mouseWheel: true
+      this.$nextTick(() => {
+        this[`${wrapper}-scroll`] = new BScroll(this.$refs[wrapper], {
+          bounce: true,
+          click: true,
+          momentumLimitDistance: 5,
+          scrollY: true,
+          scrollbar: {
+            fade: false,
+            interactive: false // 1.8.0 新增
+          },
+          mouseWheel: true
+        });
       });
     },
+    destroyBScroll(el) {
+      if (this[el]) {
+        this[el].destroy();
+        this[el] = null;
+      }
+    },
     showSearchPage() {
-      this.searchVisible = true;
-      if (!this["searchList-scroll"]) {
-        this.getBSroll("searchList");
+      if (!this.keyword) {
+        this.searchVisible = true;
+        this.searchLock = false;
       }
     },
     searchHandler() {
-      console.log(this.keyword);
+      this.doSearch(this.currentBook, this.keyword).then((results) => {
+        if (results.length) {
+          this.searchList = this.highlight(results, this.keyword);
+
+          if (!this["searchList-scroll"]) {
+            this.getBSroll("searchList");
+          } else {
+            this["searchList-scroll"].refresh();
+          }
+        } else {
+          this.searchList = [];
+          this.destroyBScroll("searchList-scroll");
+          this.searchLock = true;
+        }
+      });
+    },
+    // 高亮
+    highlight(results, target) {
+      return results.map((item) => {
+        item.excerpt = item.excerpt.replace(
+          target,
+          `<span class="highlight">${target}</span>`
+        );
+        return item;
+      });
+    },
+    // 搜索算法
+    doSearch(book, q) {
+      return Promise.all(
+        book.spine.spineItems.map(item => item
+            .load(book.load.bind(book))
+            .then(item.find.bind(item, q))
+            .finally(item.unload.bind(item)))
+      ).then(results => Promise.resolve([].concat(...results)));
     },
     hideSearchPage() {
       this.searchVisible = false;
       this.keyword = "";
+      this.searchList = [];
+      this.destroyBScroll("searchList-scroll");
     },
-    toSection(href) {
-      this.display(href, () => {
-      this.setMenuVisible(false);
+    displayContent(target, highlight = false) {
+      this.display(target, () => {
+        this.setMenuVisible(false);
+        highlight && this.currentBook.rendition.annotations.highlight(target);
       });
     },
     getItemStyle(level) {
@@ -136,6 +191,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/assets/styles/global.scss";
+
 .content-wrapper {
   width: 100%;
   height: 100%;
@@ -178,8 +234,6 @@ export default {
     padding: px2rem(15) 0;
     .book-cover-wrapper {
       flex: 0 0 px2rem(45);
-
-      // background: linear-gradient(30deg, #990, #090);
       .book-cover {
         width: px2rem(45);
         height: px2rem(60);
@@ -217,7 +271,7 @@ export default {
     position: relative;
     box-sizing: border-box;
     margin: px2rem(10) 0 px2rem(5);
-    .content{
+    .content {
       outline: 9999px solid #cecece;
       clip: rect(0 9999px 9999px 0);
       .content-li {
@@ -229,9 +283,12 @@ export default {
           width: 80%;
           @include ellipsis;
         }
+        &.selected {
+          color: rgb(88, 129, 78);
+        }
       }
       .content-li + .content-li {
-        border-top: px2rem(1) solid #ccc;
+        border-top: px2rem(1) solid rgba(73, 113, 114, 0.1);
       }
     }
   }
@@ -243,8 +300,18 @@ export default {
     position: relative;
     box-sizing: border-box;
     margin: px2rem(10) 0 px2rem(5);
-    .searchList-li {
-      padding: px2rem(10);
+    .content {
+      outline: 9999px solid #cecece;
+      clip: rect(0 9999px 9999px 0);
+      .searchList-li {
+        padding: px2rem(10);
+        & /deep/ .highlight {
+          background: #ff0;
+        }
+      }
+      .searchList-li + .searchList-li {
+        border-top: px2rem(1) solid rgba(73, 113, 114, 0.2);
+      }
     }
   }
 }
