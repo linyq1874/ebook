@@ -1,7 +1,7 @@
 <template>
   <div class="ebook" ref="ebook">
     <div class="book-wrapper">
-      <!-- <book-mark ref="bookMark" class="book-mark"></book-mark> -->
+      <book-mark></book-mark>
       <book-title></book-title>
       <nav>
         <router-link v-for="(nav,index) in routerPath" :key="index" :to="nav.path">{{nav.name}}</router-link>
@@ -53,29 +53,13 @@ export default {
     BookMark
   },
   watch: {
-    offsetY(val) {
-      const { ebook, bookMark } = this.$refs;
-      ebook.style.top = `${px2rem(val)}rem`;
-      if (val > 0 && val <= 30) {
-        console.log(1);
-
-        // ebook.style.transform = `translateY(${px2rem(val)}rem)`;
-        ebook.style.top = `${px2rem(val)}rem`;
-      } else if (val > 30 && val <= 45) {
-        console.log(2);
-
-        // ebook.style.transform = `translateY(${px2rem(val)}rem)`;
-        ebook.style.top = `${px2rem(val)}rem`;
-      } else if (val > 45) {
-        console.log(3);
-
-        // ebook.style.transform = `translateY(${px2rem(val)}rem)`;
-        ebook.style.top = `${px2rem(val)}rem`;
-        // bookMark.style.transform = `translateY(${px2rem(-val)}rem)`;
-        // ebook.style.top = `${px2rem(val)}rem`;
-      } else if (val === 0) {
-        ebook.style.top = `0`;
-        // ebook.style.transform = `translateY(0)`;
+    offsetY(v) {
+      if (!this.menuVisible && this.bookAvailable) {
+        if (v > 0) {
+          this.move(v);
+        } else if (v === 0) {
+          this.restore();
+        }
       }
     }
   },
@@ -83,6 +67,19 @@ export default {
     this.loopReadTime();
   },
   methods: {
+    move(v) {
+      this.$refs.ebook.style.top = `${px2rem(v)}rem`;
+    },
+    restore() {
+      const { ebook } = this.$refs;
+
+      ebook.style.top = 0;
+      ebook.style.transition = "all 0.2s linear";
+      // 让动画更流畅
+      setTimeout(() => {
+        ebook.style.transition = "";
+      }, 200);
+    },
     changeHandler() {
       setLocale(this.lang);
     },
@@ -112,20 +109,12 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  // overflow: hidden;
   width: 100%;
   height: 100%;
   .book-wrapper {
     position: relative;
     nav {
       position: absolute;
-    }
-    .book-mark {
-      position: absolute;
-      top: px2rem(-50);
-      left: 0;
-      height: px2rem(50);
-      width: 100%;
     }
   }
 }

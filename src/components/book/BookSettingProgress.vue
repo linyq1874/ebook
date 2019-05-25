@@ -1,6 +1,6 @@
 <template>
   <transition name="slide-up">
-    <div class="setting-wrapper" v-show="menuVisible && settingVisible === 1">
+    <div class="setting-wrapper zIndex3" v-show="menuVisible && settingVisible === 1">
       <section class="read-time-wrapper">
         <span>{{getReadTime()}}</span>
         <i class="iconfont icon-forward"></i>

@@ -1,6 +1,6 @@
 <template>
   <transition name="slide-up">
-    <div class="settingWrapper" v-show="menuVisible && settingVisible === 3">
+    <div class="settingWrapper zIndex3" v-show="menuVisible && settingVisible === 3">
       <div class="setting-fontSize">
         <div class="preview" :style="{fontSize: fontSizeList[0].fontSize + 'px'}">A</div>
         <div

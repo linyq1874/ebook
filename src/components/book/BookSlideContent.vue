@@ -138,7 +138,7 @@ export default {
       this.searchVisible = false;
       this.keyword = "";
       this.searchList = [];
-      this.destroyBScroll("searchList");
+      // this.destroyBScroll("searchList");
     },
     // 全局搜索处理
     searchHandler() {

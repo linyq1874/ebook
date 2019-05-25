@@ -1,6 +1,6 @@
 <template>
   <transition name="slide-up">
-    <div class="setting-wrapper" v-show="menuVisible && settingVisible === 2">
+    <div class="setting-wrapper zIndex3" v-show="menuVisible && settingVisible === 2">
       <div class="setting-theme">
         <section
           class="setting-theme-item"
@@ -47,7 +47,6 @@ export default {
   position: absolute;
   bottom: px2rem(48);
   left: 0;
-  z-index: 190;
   width: 100%;
   height: px2rem(90);
   box-shadow: 0 px2rem(-8) px2rem(8) rgba(0, 0, 0, 0.15);

@@ -1,11 +1,12 @@
 <template>
-  <div id="book">
-    <!-- <div
-      class="mask zIndex5"
+  <div class="book-reader">
+    <div id="book"></div>
+    <div
+      class="mask zIndex2"
       @touchmove="onMaskTouchmove"
       @touchend="onMaskTouchend"
       @click="onMaskClick"
-    ></div>-->
+    ></div>
   </div>
 </template>
 
@@ -40,22 +41,20 @@ export default {
       e.stopPropagation();
     },
     onMaskTouchmove(e) {
-      console.log(e);
-
-      this.firstClientY = this.firstClientY || e.changedTouches[0].pageY;
-      const offSetY = e.changedTouches[0].pageY - this.firstClientY;
-      console.log(offSetY);
-
-      this.setOffsetY(offSetY);
+      let offSetY = 0;
+      if (this.firstOffsetY) {
+        offSetY = e.changedTouches[0].clientY - this.firstOffsetY;
+        this.setOffsetY(offSetY);
+      } else {
+        this.firstOffsetY = e.changedTouches[0].clientY;
+      }
+      this.prevent(e);
     },
-    onMaskTouchend(e) {
-      // console.log("onMaskTouchend", e);
-      // this.prevent(e);
-      this.firstClientY = 0;
+    onMaskTouchend() {
       this.setOffsetY(0);
+      this.firstOffsetY = 0;
     },
     onMaskClick(e) {
-      console.log("onMaskClick", e);
       const { offsetX } = e,
         win = window,
         { innerWidth } = win;
@@ -68,7 +67,7 @@ export default {
         this.toggleTitleAndMenu();
       }
 
-      // this.prevent(e);
+      this.prevent(e);
     },
     getBook() {
       const fileName = this.$route.params.fileName.replace(/\|/, "/");
@@ -89,7 +88,7 @@ export default {
       // 生成Rendition
       this.initRendition();
       // 手势操作
-      this.initGuesture();
+      // this.initGuesture();
       // 电子书初始化信息
       this.parseBook();
       // 书本加载完毕
@@ -243,12 +242,16 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/assets/styles/global.scss";
-.mask {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  // background: #000;
+.book-reader {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  .mask {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
 }
 </style>

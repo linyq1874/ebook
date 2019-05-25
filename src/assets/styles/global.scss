@@ -4,14 +4,17 @@
 @import './mixin.scss';
 
 
+// 蒙层
 .zIndex2 {
   z-index: 2;
 }
 
+// BookTitle 和 BookMenu，及其子组件
 .zIndex3 {
   z-index: 3;
 }
 
+// 目录层级当前为最高
 .zIndex4 {
   z-index: 4;
 }

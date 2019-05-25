@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <div class="book-content-wrapper zIndex4" v-show="menuVisible && settingVisible === 0">
+    <div class="book-content-wrapper zIndex5" v-show="menuVisible && settingVisible === 0">
       <transition name="slide-right">
         <section class="book-content-info-wrapper" v-show="menuVisible && settingVisible === 0">
           <div class="content-page-wrapper" v-if="bookAvailable">
