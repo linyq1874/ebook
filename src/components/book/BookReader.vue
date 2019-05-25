@@ -28,9 +28,7 @@ export default {
   mixins: [BookMixin],
   name: "",
   data() {
-    return {
-      firstClientY: 0
-    };
+    return {};
   },
   mounted() {
     this.getBook();
@@ -41,6 +39,8 @@ export default {
       e.stopPropagation();
     },
     onMaskTouchmove(e) {
+      if (this.menuVisible || !this.bookAvailable) return;
+      // 记录下拉距离
       let offSetY = 0;
       if (this.firstOffsetY) {
         offSetY = e.changedTouches[0].clientY - this.firstOffsetY;
@@ -48,11 +48,20 @@ export default {
       } else {
         this.firstOffsetY = e.changedTouches[0].clientY;
       }
+      // // 水平滑动操作
+      // let offsetX = 0;
+      // if (this.firstoffsetX) {
+      //   offsetX = e.changedTouches[0].clientX - this.firstoffsetX;
+      //   console.log(offsetX);
+      // } else {
+      //   this.firstoffsetX = e.changedTouches[0].clientX;
+      // }
       this.prevent(e);
     },
     onMaskTouchend() {
       this.setOffsetY(0);
-      this.firstOffsetY = 0;
+      // this.firstOffsetX = null;
+      this.firstOffsetY = null;
     },
     onMaskClick(e) {
       const { offsetX } = e,

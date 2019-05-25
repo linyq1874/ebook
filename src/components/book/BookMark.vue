@@ -45,16 +45,14 @@ export default {
   },
   watch: {
     offsetY(v) {
-      if (!this.menuVisible && this.bookAvailable) {
-        if (v === 0) {
-          this.restore();
-        } else if (v > 0 && v < this.height) {
-          this.beforeHeight();
-        } else if (v >= this.height && v < this.threshold) {
-          this.beforeThreshold(v);
-        } else if (v >= this.threshold) {
-          this.afterThreshold(v);
-        }
+      if (v === 0) {
+        this.restore();
+      } else if (v > 0 && v < this.height) {
+        this.beforeHeight();
+      } else if (v >= this.height && v < this.threshold) {
+        this.beforeThreshold(v);
+      } else if (v >= this.threshold) {
+        this.afterThreshold(v);
       }
     }
   },
