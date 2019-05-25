@@ -26,7 +26,7 @@
         </div>
       </section>
       <section class="section">
-        <span class="progress-section-text">{{getSectionName}}</span>
+        <span class="progress-section-text" v-if="bookAvailable">{{getSectionName}}</span>
         <span class="progress-text">({{bookAvailable ? progress + '%' : $t('book.loading')}})</span>
       </section>
     </div>
@@ -37,7 +37,7 @@
 import BookMixin from "@/utils/mixins";
 
 export default {
-  name: "BookSettingFont",
+  name: "BookSettingProgress",
   mixins: [BookMixin],
   computed: {
     // 获取章节名字
@@ -54,7 +54,9 @@ export default {
       //     name = currentBook.navigation.get(sectionInfo.href).label;
       //   }
       // }
-      return section ? navigation[section].label : '';
+      return section
+        ? navigation && navigation[section] && navigation[section].label
+        : "";
       // return name;
     }
   },

@@ -1,8 +1,8 @@
 <template>
-  <div class="ebook">
+  <div class="ebook" ref="ebook">
     <div class="book-wrapper">
+      <!-- <book-mark ref="bookMark" class="book-mark"></book-mark> -->
       <book-title></book-title>
-      <!-- <div id="book"></div> -->
       <nav>
         <router-link v-for="(nav,index) in routerPath" :key="index" :to="nav.path">{{nav.name}}</router-link>
         <select v-model="lang" @change="changeHandler">
@@ -20,8 +20,10 @@
 <script>
 import BookTitle from "@/components/book/BookTitle";
 import BookMenu from "@/components/book/BookMenu";
+import BookMark from "@/components/book/BookMark";
 import { setLocale, getReadTime, setReadTime } from "@/utils/localStorage";
 import BookMixin from "@/utils/mixins";
+import { px2rem } from "@/utils/utils";
 
 export default {
   name: "",
@@ -47,7 +49,35 @@ export default {
   },
   components: {
     BookTitle,
-    BookMenu
+    BookMenu,
+    BookMark
+  },
+  watch: {
+    offsetY(val) {
+      const { ebook, bookMark } = this.$refs;
+      ebook.style.top = `${px2rem(val)}rem`;
+      if (val > 0 && val <= 30) {
+        console.log(1);
+
+        // ebook.style.transform = `translateY(${px2rem(val)}rem)`;
+        ebook.style.top = `${px2rem(val)}rem`;
+      } else if (val > 30 && val <= 45) {
+        console.log(2);
+
+        // ebook.style.transform = `translateY(${px2rem(val)}rem)`;
+        ebook.style.top = `${px2rem(val)}rem`;
+      } else if (val > 45) {
+        console.log(3);
+
+        // ebook.style.transform = `translateY(${px2rem(val)}rem)`;
+        ebook.style.top = `${px2rem(val)}rem`;
+        // bookMark.style.transform = `translateY(${px2rem(-val)}rem)`;
+        // ebook.style.top = `${px2rem(val)}rem`;
+      } else if (val === 0) {
+        ebook.style.top = `0`;
+        // ebook.style.transform = `translateY(0)`;
+      }
+    }
   },
   mounted() {
     this.loopReadTime();
@@ -78,11 +108,25 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/assets/styles/global.scss";
-
-.book-wrapper {
-  position: relative;
-  nav {
-    position: absolute;
+.ebook {
+  position: absolute;
+  top: 0;
+  left: 0;
+  // overflow: hidden;
+  width: 100%;
+  height: 100%;
+  .book-wrapper {
+    position: relative;
+    nav {
+      position: absolute;
+    }
+    .book-mark {
+      position: absolute;
+      top: px2rem(-50);
+      left: 0;
+      height: px2rem(50);
+      width: 100%;
+    }
   }
 }
 </style>

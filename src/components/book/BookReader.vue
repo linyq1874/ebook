@@ -1,5 +1,12 @@
 <template>
-  <div id="book"></div>
+  <div id="book">
+    <!-- <div
+      class="mask zIndex5"
+      @touchmove="onMaskTouchmove"
+      @touchend="onMaskTouchend"
+      @click="onMaskClick"
+    ></div>-->
+  </div>
 </template>
 
 <script>
@@ -20,12 +27,49 @@ export default {
   mixins: [BookMixin],
   name: "",
   data() {
-    return {};
+    return {
+      firstClientY: 0
+    };
   },
   mounted() {
     this.getBook();
   },
   methods: {
+    prevent(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    },
+    onMaskTouchmove(e) {
+      console.log(e);
+
+      this.firstClientY = this.firstClientY || e.changedTouches[0].pageY;
+      const offSetY = e.changedTouches[0].pageY - this.firstClientY;
+      console.log(offSetY);
+
+      this.setOffsetY(offSetY);
+    },
+    onMaskTouchend(e) {
+      // console.log("onMaskTouchend", e);
+      // this.prevent(e);
+      this.firstClientY = 0;
+      this.setOffsetY(0);
+    },
+    onMaskClick(e) {
+      console.log("onMaskClick", e);
+      const { offsetX } = e,
+        win = window,
+        { innerWidth } = win;
+
+      if (offsetX / innerWidth <= 1 / 4) {
+        this.prevPage();
+      } else if (offsetX / innerWidth >= 3 / 4) {
+        this.nextPage();
+      } else {
+        this.toggleTitleAndMenu();
+      }
+
+      // this.prevent(e);
+    },
     getBook() {
       const fileName = this.$route.params.fileName.replace(/\|/, "/");
 
@@ -199,4 +243,12 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/assets/styles/global.scss";
+.mask {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  // background: #000;
+}
 </style>

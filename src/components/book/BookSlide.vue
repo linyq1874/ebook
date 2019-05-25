@@ -4,11 +4,13 @@
       <transition name="slide-right">
         <section class="book-content-info-wrapper" v-show="menuVisible && settingVisible === 0">
           <div class="content-page-wrapper" v-if="bookAvailable">
+            <!-- 动态组件 -->
             <div class="content-page">
               <keep-alive>
                 <component :is="tab === 1 ? content : bookmark"></component>
               </keep-alive>
             </div>
+            <!-- 底部导航 -->
             <nav class="book-content-nav">
               <span class="content-nav" @click="changeTab(1)">{{$t('book.navigation')}}</span>
               |
@@ -18,11 +20,13 @@
               >{{$t('book.bookmark')}}</span>
             </nav>
           </div>
+          <!-- 等待动画 -->
           <div class="empty" v-else>
             <book-loading></book-loading>
           </div>
         </section>
       </transition>
+      <!-- 蒙层 -->
       <section class="mask" @click="maskClick"></section>
     </div>
   </transition>

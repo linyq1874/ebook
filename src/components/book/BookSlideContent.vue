@@ -1,5 +1,6 @@
 <template>
   <div class="content-wrapper">
+    <!-- 全局搜索框 -->
     <section class="search">
       <i class="iconfont icon-search"></i>
       <input
@@ -9,22 +10,17 @@
         @keyup.enter.exact="searchHandler"
         @focus="showSearchPage"
         v-model.trim="keyword"
-      />
-      <div class="cancel" v-if="searchVisible" @click="hideSearchPage">
-        {{ $t("book.cancel") }}
-      </div>
+      >
+      <div class="cancel" v-show="searchVisible" @click="hideSearchPage">{{ $t("book.cancel") }}</div>
     </section>
-    <section class="book-info-wrapper" v-if="!searchVisible">
+    <!-- 书本基本信息 -->
+    <section class="book-info-wrapper" v-show="!searchVisible">
       <div class="book-cover-wrapper">
-        <img :src="cover" class="book-cover" />
+        <img :src="cover" class="book-cover">
       </div>
       <div class="book-info">
-        <div class="book-title">
-          {{ metadata && metadata.title }}
-        </div>
-        <div class="book-author">
-          {{ metadata && metadata.creator }}
-        </div>
+        <div class="book-title">{{ metadata && metadata.title }}</div>
+        <div class="book-author">{{ metadata && metadata.creator }}</div>
       </div>
       <div class="book-progress-wrapper">
         <div class="book-progress">
@@ -34,11 +30,8 @@
         <div class="book-time">{{ getReadTime() }}</div>
       </div>
     </section>
-    <section
-      class="content-list-wrapper"
-      ref="content-list-wrapper"
-      v-if="!searchVisible"
-    >
+    <!-- 目录 -->
+    <section class="content-list-wrapper" ref="content-list-wrapper" v-show="!searchVisible">
       <ul class="content">
         <li
           v-for="(item, index) in navigationList"
@@ -47,14 +40,13 @@
           @click="displayContent(item.href)"
           :class="{ selected: section === index }"
         >
-          <p class="content-text" :style="getItemStyle(item.level)">
-            {{ item.label }}
-          </p>
+          <p class="content-text" :style="getItemStyle(item.level)">{{ item.label }}</p>
         </li>
       </ul>
     </section>
-    <section class="searchList" ref="searchList" v-if="searchVisible">
-      <ul class="content" v-if="searchList.length">
+    <!-- 搜索展示列表 -->
+    <section class="searchList" ref="searchList" v-show="searchVisible">
+      <ul class="content" v-show="searchList.length">
         <!-- 有带样式，需要使用v-html -->
         <li
           v-for="(item, index) in searchList"
@@ -64,7 +56,7 @@
           @click="displayContent(item.cfi, 'highlight')"
         ></li>
       </ul>
-      <p v-if="searchLock && !searchList.length && keyword">没有搜到相关信息</p>
+      <p v-show="searchLock && !searchList.length && keyword">没有搜到相关信息</p>
     </section>
   </div>
 </template>
@@ -97,63 +89,69 @@ export default {
       if (val === "") {
         this.searchLock = false;
         this.searchList = [];
-        this.destroyBScroll("searchList-scroll");
+      }
+    },
+    // 当再次切换到目录页时，要再次初始化
+    settingVisible(val) {
+      if (val === 0) {
+        this.initBSroll("content-list-wrapper");
       }
     }
   },
-  components: {},
   mounted() {
-    this.getBSroll("content-list-wrapper");
+    this.$nextTick(() => {
+      this.initBSroll("content-list-wrapper");
+    });
   },
   methods: {
-    getBSroll(wrapper) {
-      this.$nextTick(() => {
-        this[`${wrapper}-scroll`] = new BScroll(this.$refs[wrapper], {
+    // 初始化BScroll
+    initBSroll(el) {
+      if (!this[`${el}-scroll`]) {
+        this[`${el}-scroll`] = new BScroll(this.$refs[el], {
           bounce: true,
           click: true,
           momentumLimitDistance: 5,
+          momentum: true, // 当快速滑动时是否开启滑动惯性
           scrollY: true,
           scrollbar: {
             fade: false,
-            interactive: false // 1.8.0 新增
+            interactive: true // 1.8.0 新增
           },
           mouseWheel: true
         });
-      });
-    },
-    destroyBScroll(el) {
-      if (this[el]) {
-        this[el].destroy();
-        this[el] = null;
+      } else {
+        // 刷新要在$nextTick
+        this.$nextTick(() => {
+          this[`${el}-scroll`].refresh();
+        });
       }
     },
+    // 展开搜索页面
     showSearchPage() {
       if (!this.keyword) {
         this.searchVisible = true;
         this.searchLock = false;
       }
     },
+    // 隐藏搜索页面
     hideSearchPage() {
       this.searchVisible = false;
       this.keyword = "";
       this.searchList = [];
-      this.destroyBScroll("searchList-scroll");
+      this.destroyBScroll("searchList");
     },
+    // 全局搜索处理
     searchHandler() {
       this.doSearch(this.currentBook, this.keyword).then((results) => {
         if (results.length) {
           this.searchList = this.highlight(results, this.keyword);
-
-          if (!this["searchList-scroll"]) {
-            this.getBSroll("searchList");
-          } else {
-            this["searchList-scroll"].refresh();
-          }
         } else {
           this.searchList = [];
-          this.destroyBScroll("searchList-scroll");
           this.searchLock = true;
         }
+        this.$nextTick(() => {
+          this.initBSroll("searchList");
+        });
       });
     },
     // 高亮
@@ -175,6 +173,7 @@ export default {
             .finally(item.unload.bind(item)))
       ).then(results => Promise.resolve([].concat(...results)));
     },
+    // 电子书自带高亮算法
     displayContent(target, highlight = false) {
       this.display(target, () => {
         this.setMenuVisible(false);
