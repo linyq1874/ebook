@@ -39,27 +39,6 @@ import BookMixin from "@/utils/mixins";
 export default {
   name: "BookSettingProgress",
   mixins: [BookMixin],
-  computed: {
-    // 获取章节名字
-    getSectionName() {
-      const { section, navigation } = this;
-      // if (section) {
-      //   const sectionInfo = currentBook.section(section);
-      //   if (
-      //     sectionInfo
-      //     && sectionInfo.href
-      //     && currentBook
-      //     && currentBook.navigation
-      //   ) {
-      //     name = currentBook.navigation.get(sectionInfo.href).label;
-      //   }
-      // }
-      return section
-        ? navigation && navigation[section] && navigation[section].label
-        : "";
-      // return name;
-    }
-  },
   methods: {
     displaySection() {
       const sectionInfo = this.currentBook.section(this.section);

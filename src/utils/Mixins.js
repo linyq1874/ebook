@@ -44,8 +44,19 @@ const BookMixin = {
       'isBookmark',
       'speakingIconBottom'
     ]),
+    // 获取主题样式列表
     themeList() {
       return THEME_LIST(this);
+    },
+    // 获取章节名字
+    getSectionName() {
+      const {
+        section,
+        navigation
+      } = this;
+      return section
+        ? navigation && navigation[section] && navigation[section].label
+        : "";
     }
   },
   methods: {
@@ -117,6 +128,7 @@ const BookMixin = {
         });
       }
     },
+    // 获取阅读时间
     getReadTime() {
       return this.$t('book.haveRead').replace('$1', getReadTimeByMinute(this.fileName));
     },
@@ -143,14 +155,6 @@ const BookMixin = {
         });
       }
     }
-    // getSectionName() {
-    //   if (this.section) {
-    //     const section = this.currentBook.section(this.section);
-    //     if (section && section.href && this.currentBook && this.currentBook.navigation) {
-    //       return this.navigation[this.section].label;
-    //     }
-    //   }
-    // }
   }
 };
 

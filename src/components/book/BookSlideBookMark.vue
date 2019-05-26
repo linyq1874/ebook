@@ -91,7 +91,6 @@ $BLUE: #010275;
     position: relative;
     line-height: px2rem(18);
     box-sizing: border-box;
-    padding-top: px2rem(20);
     .bookmark-item {
       width: 100%;
       box-sizing: border-box;

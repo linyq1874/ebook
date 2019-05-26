@@ -1,6 +1,7 @@
 <template>
   <div class="ebook" ref="ebook">
     <div class="book-wrapper">
+      <book-header></book-header>
       <book-mark></book-mark>
       <book-title></book-title>
       <nav>
@@ -13,6 +14,7 @@
 
       <router-view></router-view>
       <book-menu></book-menu>
+      <book-footer></book-footer>
     </div>
   </div>
 </template>
@@ -21,6 +23,9 @@
 import BookTitle from "@/components/book/BookTitle";
 import BookMenu from "@/components/book/BookMenu";
 import BookMark from "@/components/book/BookMark";
+import BookHeader from "@/components/book/BookHeader";
+import BookFooter from "@/components/book/BookFooter";
+
 import { setLocale, getReadTime, setReadTime } from "@/utils/localStorage";
 import BookMixin from "@/utils/mixins";
 import { px2rem } from "@/utils/utils";
@@ -50,7 +55,9 @@ export default {
   components: {
     BookTitle,
     BookMenu,
-    BookMark
+    BookMark,
+    BookHeader,
+    BookFooter
   },
   watch: {
     offsetY(v) {

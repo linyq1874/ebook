@@ -40,7 +40,7 @@
 <script>
 import BookMark from "./BookSlideBookMark";
 import BookContent from "./BookSlideContent";
-import BookLoading from "./Loading";
+import BookLoading from "@/common/Loading";
 import BookMixin from "@/utils/mixins";
 
 export default {
