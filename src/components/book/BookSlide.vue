@@ -12,10 +12,15 @@
             </div>
             <!-- 底部导航 -->
             <nav class="book-content-nav">
-              <span class="content-nav" @click="changeTab(1)">{{$t('book.navigation')}}</span>
+              <span
+                class="content-nav"
+                :class="{selected : tab === 1}"
+                @click="changeTab(1)"
+              >{{$t('book.navigation')}}</span>
               |
               <span
                 class="bookmark-nav"
+                :class="{selected : tab === 2}"
                 @click="changeTab(2)"
               >{{$t('book.bookmark')}}</span>
             </nav>
@@ -92,6 +97,9 @@ export default {
         .bookmark-nav {
           flex: 1;
           text-align: center;
+          &.selected {
+            color: rgb(16, 134, 124);
+          }
         }
       }
     }

@@ -62,7 +62,6 @@
 </template>
 
 <script>
-import BScroll from "better-scroll";
 import BookMixin from "@/utils/mixins";
 import { px2rem } from "@/utils/utils";
 
@@ -94,38 +93,16 @@ export default {
     // 当再次切换到目录页时，要再次初始化
     settingVisible(val) {
       if (val === 0) {
-        this.initBSroll("content-list-wrapper");
+        this.initBScroll("content-list-wrapper");
       }
     }
   },
   mounted() {
     this.$nextTick(() => {
-      this.initBSroll("content-list-wrapper");
+      this.initBScroll("content-list-wrapper");
     });
   },
   methods: {
-    // 初始化BScroll
-    initBSroll(el) {
-      if (!this[`${el}-scroll`]) {
-        this[`${el}-scroll`] = new BScroll(this.$refs[el], {
-          bounce: true,
-          click: true,
-          momentumLimitDistance: 5,
-          momentum: true, // 当快速滑动时是否开启滑动惯性
-          scrollY: true,
-          scrollbar: {
-            fade: false,
-            interactive: true // 1.8.0 新增
-          },
-          mouseWheel: true
-        });
-      } else {
-        // 刷新要在$nextTick
-        this.$nextTick(() => {
-          this[`${el}-scroll`].refresh();
-        });
-      }
-    },
     // 展开搜索页面
     showSearchPage() {
       if (!this.keyword) {
@@ -150,7 +127,7 @@ export default {
           this.searchLock = true;
         }
         this.$nextTick(() => {
-          this.initBSroll("searchList");
+          this.initBScroll("searchList");
         });
       });
     },

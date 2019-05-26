@@ -1,7 +1,22 @@
-import { mapGetters, mapActions } from 'vuex';
-import { THEME_LIST } from './Book';
-import { addCss, removeAllCss, getReadTimeByMinute } from './utils';
-import { setLocation } from './localStorage';
+import {
+  mapGetters,
+  mapActions
+} from 'vuex';
+import BScroll from "better-scroll";
+
+import {
+  THEME_LIST
+} from './Book';
+import {
+  addCss,
+  removeAllCss,
+  getReadTimeByMinute
+} from './utils';
+import {
+  setLocation,
+  getBookmark
+} from './localStorage';
+
 
 // import * as Storage from "./localStorage";
 
@@ -65,8 +80,11 @@ const BookMixin = {
     },
     // 章节跳转时，更新进度
     refreshLocation() {
-      const { currentBook, fileName } = this,
-        currentLocation = currentBook.rendition.currentLocation();
+      const {
+        currentBook,
+        fileName
+      } = this,
+      currentLocation = currentBook.rendition.currentLocation();
 
       if (currentLocation && currentLocation.start) {
         const startCfi = currentLocation.start.cfi,
@@ -75,6 +93,14 @@ const BookMixin = {
         this.setProgress(Math.floor(progress * 100));
         this.setSection(currentLocation.start.index);
         setLocation(fileName, startCfi);
+
+        // 章节跳转时，判断该页面是否有书签
+        const bookmarks = getBookmark(fileName);
+        if (bookmarks && bookmarks.some(bookmark => bookmark.cfi === startCfi)) {
+          this.setIsBookmark(true);
+        } else {
+          this.setIsBookmark(false);
+        }
       }
     },
     // 通用显示方法
@@ -93,6 +119,29 @@ const BookMixin = {
     },
     getReadTime() {
       return this.$t('book.haveRead').replace('$1', getReadTimeByMinute(this.fileName));
+    },
+
+    // 初始化BScroll
+    initBScroll(el) {
+      if (!this[`${el}-scroll`]) {
+        this[`${el}-scroll`] = new BScroll(this.$refs[el], {
+          bounce: true,
+          click: true,
+          momentumLimitDistance: 5,
+          momentum: true, // 当快速滑动时是否开启滑动惯性
+          scrollY: true,
+          scrollbar: {
+            fade: false,
+            interactive: true // 1.8.0 新增
+          },
+          mouseWheel: true
+        });
+      } else {
+        // 刷新要在$nextTick
+        this.$nextTick(() => {
+          this[`${el}-scroll`].refresh();
+        });
+      }
     }
     // getSectionName() {
     //   if (this.section) {

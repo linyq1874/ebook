@@ -14,6 +14,7 @@
 import BookMark from "@/common/bookmark";
 import BookMixin from "@/utils/mixins";
 import { realPx, px2rem } from "@/utils/utils";
+import { getBookmark, setBookmark } from "@/utils/localStorage";
 
 const BLUE = "#010275",
   WHITE = "#7d7d7d";
@@ -54,9 +55,39 @@ export default {
       } else if (v >= this.threshold) {
         this.afterThreshold(v);
       }
+    },
+    // 当页面有书签时，样式进行改变
+    isBookmark(v) {
+      this.isFixed = v;
+      this.color = v ? BLUE : WHITE;
     }
   },
   methods: {
+    // 保存书签
+    saveBookmark() {
+      // 电子书cfi算法
+      const { start, end } = this.currentBook.rendition.currentLocation(),
+        cfiBase = start.cfi.replace(/!.*/, "").replace("epubcfi(", ""),
+        cfiStart = start.cfi.replace(/.*!/, "").replace(/\)/, ""),
+        cfiEnd = end.cfi.replace(/.*!/, "").replace(/\)/, ""),
+        cfiRange = `epubcfi(${cfiBase}!,${cfiStart},${cfiEnd})`,
+        bookmarks = getBookmark(this.fileName) || [];
+
+      this.currentBook.getRange(cfiRange).then((range) => {
+        bookmarks.push({
+          cfi: start.cfi,
+          text: range.toString().replace(/\s\s/, "") // 将空行替换掉
+        });
+
+        setBookmark(this.fileName, bookmarks);
+      });
+    },
+    removeBookmark() {
+      const { cfi } = this.currentBook.rendition.currentLocation().start,
+        bookmarks = getBookmark(this.fileName) || [];
+
+      setBookmark(this.fileName, bookmarks.filter(item => item.cfi !== cfi));
+    },
     // 状态4：归位
     restore() {
       const { bookmark, iconDown } = this.$refs;
@@ -66,7 +97,13 @@ export default {
         bookmark.style.top = `${px2rem(-35)}rem`;
         iconDown.style.transform = "rotate(0deg)";
       }, 200);
-      this.isFixed ? this.setIsBookmark(true) : this.setIsBookmark(false);
+      if (this.isFixed) {
+        this.setIsBookmark(true);
+        this.saveBookmark();
+      } else {
+        this.setIsBookmark(false);
+        this.removeBookmark();
+      }
     },
     // 状态1：正常下拉
     beforeHeight() {

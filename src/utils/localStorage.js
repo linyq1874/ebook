@@ -49,3 +49,7 @@ export const setLocation = (fileName, location) => setBookObj(fileName, 'locatio
 // 阅读时间
 export const getReadTime = fileName => getBookObj(fileName, 'readTime');
 export const setReadTime = (fileName, readTime) => setBookObj(fileName, 'readTime', readTime);
+
+// 书签
+export const getBookmark = fileName => getBookObj(fileName, 'bookmark');
+export const setBookmark = (fileName, bookmark) => setBookObj(fileName, 'bookmark', bookmark);
