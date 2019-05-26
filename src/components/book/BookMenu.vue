@@ -2,7 +2,7 @@
   <div>
     <transition name="slide-up">
       <div
-        class="menu-wrapper zIndex3"
+        class="menu-wrapper zIndex4"
         :class="{'hide-box-shadow':menuVisible && settingVisible >= 0 }"
         v-show="menuVisible"
       >

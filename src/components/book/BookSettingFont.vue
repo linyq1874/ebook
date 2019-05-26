@@ -69,6 +69,8 @@ export default {
   box-shadow: 0 px2rem(-8) px2rem(8) rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
+  background: #fff;
+
   .setting-fontSize {
     display: flex;
     flex: 2;
@@ -132,7 +134,6 @@ export default {
   }
   .setting-fontFamily {
     flex: 1;
-    background: #fff;
     font-size: px2rem(14);
     display: flex;
     @include center;

@@ -4,7 +4,7 @@
       <book-header></book-header>
       <book-mark></book-mark>
       <book-title></book-title>
-      <nav>
+      <nav class="zIndex3">
         <router-link v-for="(nav,index) in routerPath" :key="index" :to="nav.path">{{nav.name}}</router-link>
         <select v-model="lang" @change="changeHandler">
           <option value="cn" selected="selected">cn</option>

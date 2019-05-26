@@ -5,6 +5,9 @@
       class="mask zIndex2"
       @touchmove="onMaskTouchmove"
       @touchend="onMaskTouchend"
+      @mousedown.left="onMouseEnter"
+      @mousemove.left="onMouseMove"
+      @mouseup.left="onMouseOut"
       @click="onMaskClick"
     ></div>
   </div>
@@ -38,6 +41,42 @@ export default {
       e.preventDefault();
       e.stopPropagation();
     },
+    onMouseEnter(e) {
+      this.mouseState = 1;
+      this.mouseStartTime = e.timeStamp;
+
+      this.prevent(e);
+    },
+    onMouseMove(e) {
+      if (this.mouseState === 1) {
+        this.mouseState = 2;
+      } else if (this.mouseState === 2) {
+        if (this.menuVisible || !this.bookAvailable) return;
+
+        let offSetY = 0;
+        if (this.firstOffsetY) {
+          offSetY = e.clientY - this.firstOffsetY;
+          this.setOffsetY(offSetY);
+        } else {
+          this.firstOffsetY = e.clientY;
+        }
+      }
+      this.prevent(e);
+    },
+    onMouseOut(e) {
+      if (this.mouseState === 2) {
+        this.mouseState = 3;
+        this.firstOffsetY = 0;
+        this.setOffsetY(0);
+      }
+
+      this.mouseEndTime = e.timeStamp;
+      const time = this.mouseEndTime - this.mouseStartTime;
+      if (time < 200) {
+        this.mouseMove = 1;
+      }
+      this.prevent(e);
+    },
     onMaskTouchmove(e) {
       if (this.menuVisible || !this.bookAvailable) return;
       // 记录下拉距离
@@ -48,34 +87,28 @@ export default {
       } else {
         this.firstOffsetY = e.changedTouches[0].clientY;
       }
-      // // 水平滑动操作
-      // let offsetX = 0;
-      // if (this.firstoffsetX) {
-      //   offsetX = e.changedTouches[0].clientX - this.firstoffsetX;
-      //   console.log(offsetX);
-      // } else {
-      //   this.firstoffsetX = e.changedTouches[0].clientX;
-      // }
+      // 记得加阻止默认样式
       this.prevent(e);
     },
     onMaskTouchend() {
       this.setOffsetY(0);
-      // this.firstOffsetX = null;
       this.firstOffsetY = null;
     },
     onMaskClick(e) {
+      if (this.mouseState && (this.mouseState === 2 || this.mouseState === 3)) {
+        return;
+      }
       const { offsetX } = e,
-        win = window,
-        { innerWidth } = win;
+        { innerWidth } = window;
 
-      if (offsetX / innerWidth <= 1 / 4) {
+      if (offsetX <= innerWidth * 0.3) {
         this.prevPage();
-      } else if (offsetX / innerWidth >= 3 / 4) {
+      } else if (offsetX >= innerWidth * 0.7) {
         this.nextPage();
       } else {
         this.toggleTitleAndMenu();
       }
-
+      this.mouseState = 4;
       this.prevent(e);
     },
     getBook() {
@@ -116,7 +149,8 @@ export default {
       // 生成Rendition，通过Book.renderTo
       this.rendition = this.book.renderTo("book", {
         width: win.innerWidth,
-        height: win.innerHeight
+        height: win.innerHeight,
+        method: "default" // 不加method时，微信无法查看
       });
       // 通过Rendition.display 渲染电子书
       const location = getLocation(this.fileName);

@@ -1,6 +1,6 @@
 <template>
   <transition name="slide-down">
-    <div class="title-wrapper zIndex3" v-show="menuVisible">
+    <div class="title-wrapper zIndex4" v-show="menuVisible">
       <div class="left">
         <i class="iconfont icon-back"></i>
       </div>

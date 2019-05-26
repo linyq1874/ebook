@@ -140,5 +140,6 @@ body {
   height: 100%;
   user-select: none;
   overflow: hidden;
-  font-family: Arial, sans-serif
+  font-family: Arial, sans-serif;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0); // 解决页面点击闪烁
 }

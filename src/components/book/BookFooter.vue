@@ -1,6 +1,6 @@
 <template>
   <footer>
-    <span class="footer-text">{{progress}}%</span>
+    <span class="footer-text">{{$t("book.haveRead2")}}{{progress}}%</span>
   </footer>
 </template>
 
