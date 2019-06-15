@@ -41,6 +41,7 @@
           :class="{ selected: section === index }"
         >
           <p class="content-text" :style="getItemStyle(item.level)">{{ item.label }}</p>
+          <span class="content-page">{{item.page}}</span>
         </li>
       </ul>
     </section>
@@ -257,9 +258,16 @@ export default {
         box-sizing: border-box;
         width: 100%;
         cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         .content-text {
           width: 80%;
           @include ellipsis;
+        }
+        .content-page {
+          color: #666;
+          font-size: px2rem(14);
         }
         &.selected {
           color: rgb(88, 129, 78);

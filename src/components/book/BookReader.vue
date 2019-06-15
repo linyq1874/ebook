@@ -138,8 +138,26 @@ export default {
         .then(() => this.book.locations.generate(
             750 * (window.innerWidth / 375) * (getFontSize(this.fileName) / 16)
           ))
-        .then(() => {
-          // console.log(locations);
+        .then((locations) => {
+          locations.forEach((location) => {
+            const loc = location.match(/\[(.*)\]!/)[1];
+            this.navigation.forEach((nav) => {
+              if (nav.fixedHref && nav.fixedHref.includes(loc)) {
+                nav.pageList.push(location);
+              }
+            });
+          });
+
+          let currentPage = 1;
+          this.navigation.forEach((nav, index) => {
+            if (index === 0) {
+              nav.page = 1;
+            } else {
+              nav.page = currentPage;
+            }
+            currentPage += nav.pageList.length + 1;
+          });
+
           this.setBookAvailable(true);
           this.refreshLocation();
         });
@@ -248,6 +266,8 @@ export default {
         const toc = flatten(navigation.toc);
         toc.forEach((item) => {
           item.level = find(toc, item);
+          item.fixedHref = item.href.replace(/(\.html$|\.xhtml$)/, "");
+          item.pageList = [];
           return item;
         });
         this.setNavigation(toc);
