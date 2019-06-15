@@ -139,15 +139,17 @@ export default {
             750 * (window.innerWidth / 375) * (getFontSize(this.fileName) / 16)
           ))
         .then((locations) => {
+          // 与章节匹配，同一个章节的，存入pageList中
           locations.forEach((location) => {
+            // locations中，中括号的内容与navigation中href匹配为同一章节
             const loc = location.match(/\[(.*)\]!/)[1];
             this.navigation.forEach((nav) => {
-              if (nav.fixedHref && nav.fixedHref.includes(loc)) {
+              if (nav.href && nav.href.includes(loc)) {
                 nav.pageList.push(location);
               }
             });
           });
-
+          // 简单分页算法
           let currentPage = 1;
           this.navigation.forEach((nav, index) => {
             if (index === 0) {
@@ -266,7 +268,7 @@ export default {
         const toc = flatten(navigation.toc);
         toc.forEach((item) => {
           item.level = find(toc, item);
-          item.fixedHref = item.href.replace(/(\.html$|\.xhtml$)/, "");
+          // item.fixedHref = item.href.replace(/(\.html$|\.xhtml$)/, "");
           item.pageList = [];
           return item;
         });
