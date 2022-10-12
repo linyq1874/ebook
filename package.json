@@ -10,7 +10,7 @@
   "dependencies": {
     "better-scroll": "^1.15.2",
     "core-js": "^2.6.5",
-    "epubjs": "^0.3.84",
+    "epubjs": "^0.3.93",
     "vue": "^2.6.10",
     "vue-i18n": "^8.11.2",
     "vue-router": "^3.0.3",
